@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"log"
 	"time"
 	pb "user_management/usermgmt"
+
+	"google.golang.org/grpc"
 )
 
 const (
-	address = "localhost:50051"
+	address = "user-management.default.192.168.1.240.sslip.io:80"
 )
 
 func main() {
