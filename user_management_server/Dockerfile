@@ -1,4 +1,4 @@
-FROM golang:alpine as build-env
+FROM golang:alpine as server_env
 
 ENV GO111MODULE=on
 
@@ -9,15 +9,15 @@ RUN mkdir -p /user_management/usermgmt
 
 WORKDIR /user_management
 
-COPY go.mod .
-COPY go.sum .
+ADD ../go.mod .
+ADD ../go.sum .
 RUN go mod download
 
-COPY ./usermgmt/* ./usermgmt/
-COPY ./usermgmt_server/server.go .
+COPY ../usermgmt/* ./usermgmt/
+COPY ../user_management_server/server.go .
 
-RUN go build -o /user_management
+RUN go build -o /user_management_sever
 
 EXPOSE 50051
 
-CMD [ "./user_management" ]
+CMD [ "./user_management_server" ]

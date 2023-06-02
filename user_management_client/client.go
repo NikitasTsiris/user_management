@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 	pb "user_management/usermgmt"
@@ -10,7 +11,7 @@ import (
 )
 
 const (
-	address = "user-management.default.192.168.1.240.sslip.io:80"
+	address = "localhost:50051"
 )
 
 func main() {
@@ -23,24 +24,36 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewUserManagementClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel()
 
-	var new_users = make(map[string]int32)
+	var result = "Y"
+	var name string
+	var age int32
 
-	new_users["Alice"] = 43
-	new_users["Bob"] = 30
+	for result == "Y" || result == "y" {
+		fmt.Println("resutl: ", result)
 
-	for name, age := range new_users {
+		fmt.Print("User's Name? ... ")
+		fmt.Scan(&name)
+
+		fmt.Print("User's Age? ... ")
+		fmt.Scan(&age)
+
 		response, err := client.CreateNewUser(ctx, &pb.NewUser{Name: name, Age: age})
 
 		if err != nil {
 			log.Fatalf("Could not create user: %v", err)
 		}
 
-		log.Printf(`User Details:
+		log.Printf(`Successfully Added User With Details:
 		NAME: %s
 		AGE: %d
 		ID: %d`, response.GetName(), response.GetAge(), response.GetId())
+
+		fmt.Printf("Enter user? Y/N ... ")
+		fmt.Scan(&result)
+
+		fmt.Println("resutl: ", result)
 	}
 }
