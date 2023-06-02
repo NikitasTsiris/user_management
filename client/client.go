@@ -32,13 +32,11 @@ func main() {
 	var age int32
 
 	for result == "Y" || result == "y" {
-		fmt.Println("resutl: ", result)
-
 		fmt.Print("User's Name? ... ")
-		fmt.Scan(&name)
+		fmt.Scanf( " %s", &name)
 
 		fmt.Print("User's Age? ... ")
-		fmt.Scan(&age)
+		fmt.Scanf(" %s", &age)
 
 		response, err := client.CreateNewUser(ctx, &pb.NewUser{Name: name, Age: age})
 
@@ -53,7 +51,5 @@ func main() {
 
 		fmt.Printf("Enter user? Y/N ... ")
 		fmt.Scan(&result)
-
-		fmt.Println("resutl: ", result)
 	}
 }
