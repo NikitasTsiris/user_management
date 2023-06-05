@@ -27,7 +27,7 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewUserManagementClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*60)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*600)
 	defer cancel()
 
 	var result = "Y"
