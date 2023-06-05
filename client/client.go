@@ -1,8 +1,11 @@
 package main
 
 import (
-	"context"
+	"strings"
+	"os"
+	"bufio"
 	"fmt"
+	"context"
 	"log"
 	"time"
 	pb "user_management/usermgmt"
@@ -31,12 +34,15 @@ func main() {
 	var name string
 	var age int32
 
+	reader := bufio.NewReader(os.Stdin)
+
 	for result == "Y" || result == "y" {
 		fmt.Print("User's Name? ... ")
-		fmt.Scanf( " %s", &name)
+		name, _= reader.ReadString('\n')
+		name = strings.Replace(name, "\n", "", -1)
 
 		fmt.Print("User's Age? ... ")
-		fmt.Scanf(" %s", &age)
+		fmt.Scan(&age)
 
 		response, err := client.CreateNewUser(ctx, &pb.NewUser{Name: name, Age: age})
 
@@ -49,7 +55,14 @@ func main() {
 		AGE: %d
 		ID: %d`, response.GetName(), response.GetAge(), response.GetId())
 
-		fmt.Printf("Enter user? Y/N ... ")
-		fmt.Scan(&result)
+		for {
+
+			fmt.Printf("Enter user? Y/N ... ")
+			fmt.Scan(&result)
+
+			if(strings.Contains("yYnN", result)){
+				break
+			}
+		}
 	}
 }
