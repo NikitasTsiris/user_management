@@ -1,55 +1,53 @@
 # Build Server Image
-FROM golang:alpine as server_builder
+FROM golang:1.20.4 as server_builder
 
 ENV GO111MODULE=on
 
-RUN apk update && apk add bash ca-certificates git gcc g++ libc-dev
+RUN mkdir -p /usermgmt
 
-RUN mkdir /server
-RUN mkdir -p /server/usermgmt
+COPY ./usermgmt/ /usermgmt/
+COPY ./server/server.go /
 
-WORKDIR /server
+COPY go.mod /
+COPY go.sum /
 
-COPY go.mod .
-COPY go.sum .
 RUN go mod download
+RUN go mod tidy
 
-COPY ./usermgmt/ ./usermgmt/
-COPY ./server/server.go .
+WORKDIR /
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server
 
 FROM scratch as server
 
-COPY --from=server_builder /server/server /
+COPY --from=server_builder /server /
 
 EXPOSE 50051
 
 CMD [ "/server" ]
 
 # Build Client Image
-FROM golang:alpine as client_builder
+FROM golang:1.20.4 as client_builder
 
 ENV GO111MODULE=on
 
-RUN apk update && apk add bash ca-certificates git gcc g++ libc-dev
+RUN mkdir -p /usermgmt
 
-RUN mkdir /client
-RUN mkdir -p /client/usermgmt
+COPY ./usermgmt/ /usermgmt/
+COPY ./client/client.go /
 
-WORKDIR /client
+COPY go.mod /
+COPY go.sum /
 
-COPY go.mod .
-COPY go.sum .
 RUN go mod download
+RUN go mod tidy
 
-COPY ./usermgmt/ ./usermgmt/
-COPY ./client/client.go .
+WORKDIR /
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o client
 
 FROM scratch as client
 
-COPY --from=client_builder /client/client /
+COPY --from=client_builder /client /
 
 CMD [ "/client" ]
