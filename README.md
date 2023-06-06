@@ -16,13 +16,13 @@ To build the client and server containers, follow these steps:
 To build the server container, run the following command:
 
 ```bash
-docker build . -t user_management_server --target server
+docker build . -t user_management:server --target server
 ```
 
 To build the client container, run the following command:
 
 ```bash
-docker build . -t user_management_client --target client
+docker build . -t user_management:client --target client
 ```
 
 
@@ -33,7 +33,7 @@ To run the application, follow these steps:
 1. Start the server container by running the following command:
 
 ```bash
-docker run --rm user_management_server --port 50051:50051
+docker run --rm user_management:server --port 50051:50051
 ```
 
 
@@ -42,7 +42,7 @@ docker run --rm user_management_server --port 50051:50051
 3. Instantiate the client container by running the following command:
 
 ```bash
-docker run --rm --network host user_management_client
+docker run --rm --network host user:management_client
 ```
 
 The client will communicate with the server, allowing you to register users to the database. Provide the name and age of the user to the client, and the server will add the user to the database and respond with a success message.

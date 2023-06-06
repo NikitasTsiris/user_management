@@ -25,7 +25,7 @@ COPY --from=server_builder /server/server /
 
 EXPOSE 50051
 
-cmd [ "/server" ]
+CMD [ "/server" ]
 
 # Build Client Image
 FROM golang:alpine as client_builder
@@ -51,6 +51,5 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o client
 FROM scratch as client
 
 COPY --from=client_builder /client/client /
-
 
 CMD [ "/client" ]
